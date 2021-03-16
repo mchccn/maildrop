@@ -1,3 +1,4 @@
+import { CSSProperties } from "react";
 import { IContentField } from "./ContentField";
 
 /**
@@ -12,6 +13,10 @@ export interface IComponent<
      * Display name of the component.
      */
     name: string;
+    /**
+     * Default styles for the component.
+     */
+    defaultStyles: CSSProperties;
     /**
      * Component's metadata.
      */

@@ -1,5 +1,5 @@
-import { IComponent } from "./Component";
-import { IImageContentField, ITextContentField } from "./ContentField";
+import { IComponent } from "../Component";
+import { IImageContentField, ITextContentField } from "../ContentField";
 
 export type ParagraphComponent = IComponent<{
     content: ITextContentField;

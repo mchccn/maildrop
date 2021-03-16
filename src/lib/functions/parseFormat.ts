@@ -1,4 +1,4 @@
-import { IComponentMetadata } from "./@types/Component";
+import { IComponentMetadata } from "../@types/Component";
 
 /**
  * **Parses a string into an array of component metadata.**

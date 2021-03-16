@@ -1,4 +1,3 @@
-import { CSSProperties } from "react";
 import { IContentField } from "./ContentField";
 
 /**
@@ -14,25 +13,29 @@ export interface IComponent<
      */
     name: string;
     /**
-     * Default styles for the component.
+     * ID of the component.
      */
-    defaultStyles: CSSProperties;
+    id: string;
     /**
-     * Component's metadata.
+     * Tailwind classes.
      */
-    metadata: IComponentMetadata<Content>;
+    classNames: string[];
+    /**
+     * Component's content.
+     */
+    content: Content;
 }
 
 /**
- * Metadata for a component.
+ * Properties of a single component.
  */
-export interface IComponentMetadata<Content extends { [field: string]: IContentField | IComponent } = {}> {
+export interface IComponentProperties<Component extends IComponent = IComponent> {
     /**
      * ID of the component.
      */
     id: string;
     /**
-     * Component's margin.
+     * Component's calculated margin.
      */
     margin: {
         top: number;
@@ -41,7 +44,7 @@ export interface IComponentMetadata<Content extends { [field: string]: IContentF
         left: number;
     };
     /**
-     * Component's padding.
+     * Component's calculated padding.
      */
     padding: {
         top: number;
@@ -50,11 +53,11 @@ export interface IComponentMetadata<Content extends { [field: string]: IContentF
         left: number;
     };
     /**
-     * Component's width.
+     * Component's calculated width.
      */
     width: number;
     /**
-     * Component's height.
+     * Component's calculated height.
      */
     height: number;
     /**
@@ -72,5 +75,5 @@ export interface IComponentMetadata<Content extends { [field: string]: IContentF
     /**
      * Component's content.
      */
-    content: Content;
+    content: Component["content"];
 }

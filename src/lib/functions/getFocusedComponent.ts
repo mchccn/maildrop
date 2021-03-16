@@ -1,6 +1,14 @@
-import { IComponentMetadata } from "../@types/Component";
+import { IComponentProperties } from "../@types/Component";
 
-export default function getFocusedComponent({ x, y }: { x: number; y: number }, components: IComponentMetadata[]) {
+/**
+ * Gets the component that was clicked on.
+ * @param {{ x: number; y: number; }} point Point to retrieve.
+ * @param {IComponentProperties[]} components All components.
+ * @returns The focused component or undefined, if no component was found.
+ */
+export default function getFocusedComponent(point: { x: number; y: number }, components: IComponentProperties[]) {
+    const { x, y } = point;
+
     const clickedOn = components.filter(
         ({ top, left, width, height }) => x > left && x < left + width && y > top && y < top + height
     );

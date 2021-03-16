@@ -1,4 +1,4 @@
-import { IComponentMetadata } from "../@types/Component";
+import { IComponentProperties } from "../@types/Component";
 
 /**
  * **Parses a string into an array of component metadata.**
@@ -22,7 +22,7 @@ import { IComponentMetadata } from "../@types/Component";
  * @returns Parsed component metadata.
  * @throws Throws `SyntaxError` if JSON content is malformed.
  */
-const parseFormat = (format: string): IComponentMetadata[] =>
+const parseFormat = (format: string): IComponentProperties[] =>
     format /* Sometimes my genius... it's almost frightening. */
         .split("\n\n")
         .map((line) =>

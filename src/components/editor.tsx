@@ -1,22 +1,33 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import allComponents from "../lib/all";
 import { IComponent } from "../lib/types";
 import ComponentsPanel from "./panels/components";
 import InspectorPanel from "./panels/inspector";
 
-export default function Editor({ inspectorPanelActive }: { inspectorPanelActive: boolean }) {
-    const [components, setComponents] = useState<IComponent[]>([]);
+export default function Editor({
+    inspectorPanelActive,
+    components,
+    setComponents,
+}: {
+    inspectorPanelActive: boolean;
+    components: IComponent[];
+    setComponents: Dispatch<SetStateAction<IComponent[]>>;
+}) {
+    const [height, setHeight] = useState(100);
 
-    function handleOnDragEnd(result: any) {
+    const [current, setCurrent] = useState<IComponent | undefined>(undefined);
+    const [_, rerender] = useState(0);
+
+    const handleOnDragEnd = (result: any) => {
         if (!result.destination) return;
 
         const copy = [...components];
         const [reorderedItem] = copy.splice(result.source.index, 1);
         copy.splice(result.destination.index, 0, reorderedItem);
 
-        setComponents(copy);
-    }
+        return setComponents(copy);
+    };
 
     useEffect(() => {
         window.addEventListener("beforeunload", (e) =>
@@ -33,41 +44,52 @@ export default function Editor({ inspectorPanelActive }: { inspectorPanelActive:
             }}
         >
             <ComponentsPanel allComponents={allComponents} components={components} setComponents={setComponents} />
+
             <div className="set-height flex-1 bg-gray-100 grid place-items-center overflow-scroll">
+                <div className="spacing w-full h-10"></div>
                 <div
-                    className="page bg-white"
+                    className="page bg-white flex flex-col justify-between"
                     style={{
                         width: "77.2727272727vh",
-                        height: "100vh",
+                        minHeight: `${height}vh`,
                     }}
                 >
                     {typeof window !== "undefined" ? (
                         <DragDropContext onDragEnd={handleOnDragEnd}>
                             <Droppable droppableId="rendered-components">
                                 {(provided) => (
-                                    <ul ref={provided.innerRef} {...provided.droppableProps}>
+                                    <div ref={provided.innerRef} {...provided.droppableProps}>
                                         {components.map(({ jsx }, i) => (
                                             <Draggable key={i} draggableId={i.toString()} index={i}>
                                                 {(provided) => (
-                                                    <li
+                                                    <div
                                                         ref={provided.innerRef}
                                                         {...provided.draggableProps}
                                                         {...provided.dragHandleProps}
+                                                        onContextMenu={(e) => {
+                                                            e.preventDefault();
+                                                            console.log(i);
+                                                            const copy = [...components];
+                                                            copy.splice(i, 1);
+                                                            setComponents(copy);
+                                                        }}
                                                     >
                                                         {jsx}
-                                                    </li>
+                                                    </div>
                                                 )}
                                             </Draggable>
                                         ))}
                                         {provided.placeholder}
-                                    </ul>
+                                    </div>
                                 )}
                             </Droppable>
                         </DragDropContext>
                     ) : null}
                 </div>
+                <div className="spacing w-full h-10"></div>
             </div>
-            <InspectorPanel />
+
+            <InspectorPanel current={current} rerender={rerender} />
         </div>
     );
 }

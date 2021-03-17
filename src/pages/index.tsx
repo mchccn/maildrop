@@ -1,10 +1,11 @@
 import Dexie from "dexie";
+import { GetStaticProps } from "next";
 import Head from "next/head";
 import { useState } from "react";
 import allComponents from "../lib/all";
 import { IComponent } from "../lib/types";
 
-export default function Index() {
+export default function Index({ assetPrefix }: { assetPrefix: string }) {
     const db = new Dexie("maildrop");
 
     db.version(1).stores({
@@ -97,3 +98,12 @@ export default function Index() {
         </>
     );
 }
+
+//@ts-ignore
+export const getStaticProps: GetStaticProps = () => {
+    return {
+        props: {
+            assetPrefix: process.env.NODE_ENV === "production" ? "/maildrop" : "",
+        },
+    };
+};

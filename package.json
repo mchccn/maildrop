@@ -9,9 +9,13 @@
         "start": "next start"
     },
     "dependencies": {
+        "@types/body-scroll-lock": "^2.6.1",
+        "@types/react-beautiful-dnd": "^13.0.0",
+        "body-scroll-lock": "^3.1.5",
         "dexie": "^3.0.3",
         "next": "10.0.9",
         "react": "17.0.1",
+        "react-beautiful-dnd": "^13.0.0",
         "react-dom": "17.0.1"
     },
     "devDependencies": {

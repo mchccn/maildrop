@@ -4,6 +4,6 @@ export default [
     {
         name: "test",
         category: "test",
-        jsx: <div>test</div>,
+        jsx: <div className="w-80 h-8 bg-gray-400">i am a test</div>,
     },
 ] as IComponent[];

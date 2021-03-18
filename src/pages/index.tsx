@@ -41,8 +41,8 @@ export default function Index({ assetPrefix }: { assetPrefix: string }) {
 <head>
 <link href="https://unpkg.com/tailwindcss@2.0.3/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 grid place-items-center my-10">
-<div class="bg-white min-h-screen" style="width: 72.272727vh">
+<body class="bg-white">
+<div>
 ${components.map((component) => renderToStaticMarkup(component.jsx() as ReactElement)).join("\n")}
 </div>
 </body>

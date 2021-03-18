@@ -9,20 +9,22 @@
         "start": "next start"
     },
     "dependencies": {
-        "@types/body-scroll-lock": "^2.6.1",
-        "@types/react-beautiful-dnd": "^13.0.0",
         "body-scroll-lock": "^3.1.5",
         "dexie": "^3.0.3",
-        "jsx-to-string": "^1.4.0",
         "next": "10.0.9",
         "react": "17.0.1",
         "react-beautiful-dnd": "^13.0.0",
-        "react-dom": "17.0.1"
+        "react-dom": "17.0.1",
+        "uuid": "^8.3.2"
     },
     "devDependencies": {
         "@tailwindcss/postcss7-compat": "^2.0.3",
+        "@types/body-scroll-lock": "^2.6.1",
         "@types/node": "^14.14.35",
         "@types/react": "^17.0.3",
+        "@types/react-beautiful-dnd": "^13.0.0",
+        "@types/react-dom": "^17.0.2",
+        "@types/uuid": "^8.3.0",
         "autoprefixer": "^9",
         "postcss": "^7",
         "tailwindcss": "npm:@tailwindcss/postcss7-compat",

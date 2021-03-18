@@ -1,9 +1,6 @@
 export interface IComponent {
     name: string;
     category: string;
-    jsx: React.ReactNode;
-}
-
-export enum Draggables {
-    COMPONENT = "COMPONENT",
+    content: { [property: string]: string };
+    jsx: () => React.ReactNode;
 }

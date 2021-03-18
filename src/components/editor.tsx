@@ -7,27 +7,42 @@ import InspectorPanel from "./panels/inspector";
 
 export default function Editor({
     inspectorPanelActive,
+    setInspectorPanelActive,
     components,
     setComponents,
 }: {
     inspectorPanelActive: boolean;
-    components: IComponent[];
-    setComponents: Dispatch<SetStateAction<IComponent[]>>;
+    setInspectorPanelActive: Dispatch<SetStateAction<boolean>>;
+    components: (IComponent & { id: string })[];
+    setComponents: Dispatch<SetStateAction<(IComponent & { id: string })[]>>;
 }) {
-    const [height, setHeight] = useState(100);
-
-    const [current, setCurrent] = useState<IComponent | undefined>(undefined);
-    const [_, rerender] = useState(0);
+    const [current, setCurrent] = useState<(IComponent & { id: string }) | undefined>(undefined);
 
     const handleOnDragEnd = (result: any) => {
         if (!result.destination) return;
 
         const copy = [...components];
+
         const [reorderedItem] = copy.splice(result.source.index, 1);
+
         copy.splice(result.destination.index, 0, reorderedItem);
 
         return setComponents(copy);
     };
+
+    useEffect(() => {
+        if (current) {
+            const copy = [...components];
+
+            const index = copy.findIndex(({ id }) => id === current.id);
+
+            if (index < 0) return;
+
+            copy[index] = current;
+
+            setComponents(copy);
+        }
+    }, [current]);
 
     useEffect(() => {
         window.addEventListener("beforeunload", (e) =>
@@ -43,7 +58,12 @@ export default function Editor({
                 transition: "0.15s cubic-bezier(0.4, 0, 0.2, 1) width",
             }}
         >
-            <ComponentsPanel allComponents={allComponents} components={components} setComponents={setComponents} />
+            <ComponentsPanel
+                allComponents={allComponents}
+                components={components}
+                setComponents={setComponents}
+                setCurrent={setCurrent}
+            />
 
             <div className="set-height flex-1 bg-gray-100 grid place-items-center overflow-scroll">
                 <div className="spacing w-full h-10"></div>
@@ -51,7 +71,7 @@ export default function Editor({
                     className="page bg-white flex flex-col justify-between"
                     style={{
                         width: "77.2727272727vh",
-                        minHeight: `${height}vh`,
+                        minHeight: "100vh",
                     }}
                 >
                     {typeof window !== "undefined" ? (
@@ -59,13 +79,17 @@ export default function Editor({
                             <Droppable droppableId="rendered-components">
                                 {(provided) => (
                                     <div ref={provided.innerRef} {...provided.droppableProps}>
-                                        {components.map(({ jsx }, i) => (
+                                        {components.map((component, i) => (
                                             <Draggable key={i} draggableId={i.toString()} index={i}>
                                                 {(provided) => (
                                                     <div
                                                         ref={provided.innerRef}
                                                         {...provided.draggableProps}
                                                         {...provided.dragHandleProps}
+                                                        onClick={(e) => {
+                                                            setCurrent(component);
+                                                            setInspectorPanelActive(true);
+                                                        }}
                                                         onContextMenu={(e) => {
                                                             e.preventDefault();
                                                             console.log(i);
@@ -74,7 +98,7 @@ export default function Editor({
                                                             setComponents(copy);
                                                         }}
                                                     >
-                                                        {jsx}
+                                                        {component.jsx()}
                                                     </div>
                                                 )}
                                             </Draggable>
@@ -89,7 +113,7 @@ export default function Editor({
                 <div className="spacing w-full h-10"></div>
             </div>
 
-            <InspectorPanel current={current} rerender={rerender} />
+            <InspectorPanel current={current} setCurrent={setCurrent} />
         </div>
     );
 }

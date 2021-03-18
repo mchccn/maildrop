@@ -1,14 +1,17 @@
 import { Dispatch, SetStateAction, useState } from "react";
+import * as uuid from "uuid";
 import { IComponent } from "../../lib/types";
 
 export default function ComponentsPanel({
     allComponents,
     components,
     setComponents,
+    setCurrent,
 }: {
     allComponents: IComponent[];
-    components: IComponent[];
-    setComponents: Dispatch<SetStateAction<IComponent[]>>;
+    components: (IComponent & { id: string })[];
+    setComponents: Dispatch<SetStateAction<(IComponent & { id: string })[]>>;
+    setCurrent: Dispatch<SetStateAction<(IComponent & { id: string }) | undefined>>;
 }) {
     const [activeCategory, setActiveCategory] = useState("");
     const [activeTransform, setActiveTransform] = useState(false);
@@ -55,10 +58,14 @@ export default function ComponentsPanel({
                             <div
                                 className="cursor-pointer m-2"
                                 key={i}
-                                onClick={() => setComponents([...components, component])}
+                                onClick={() => {
+                                    const componentWithId = { ...component, id: uuid.v4() };
+                                    setComponents([...components, componentWithId]);
+                                    setCurrent(componentWithId);
+                                }}
                             >
                                 {component.name}
-                                <div>{component.jsx}</div>
+                                <div>{component.jsx()}</div>
                             </div>
                         ))}
                 </div>

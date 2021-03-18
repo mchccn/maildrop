@@ -1,8 +1,8 @@
 import * as scrollLock from "body-scroll-lock";
 import Dexie from "dexie";
-import jsxToString from "jsx-to-string";
 import { GetStaticProps } from "next";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import Editor from "../components/editor";
 import Meta from "../components/meta";
 import { IComponent } from "../lib/types";
@@ -14,7 +14,7 @@ export default function Index({ assetPrefix }: { assetPrefix: string }) {
         pages: "++id,components",
     });
 
-    const [components, setComponents] = useState<IComponent[]>([]);
+    const [components, setComponents] = useState<(IComponent & { id: string })[]>([]);
     const [inspectorPanelActive, setInspectorPanelActive] = useState(false);
 
     const [copied, setCopied] = useState(false);
@@ -35,7 +35,19 @@ export default function Index({ assetPrefix }: { assetPrefix: string }) {
                     <a
                         className="cursor-pointer"
                         onClick={() => {
-                            window.navigator.clipboard.writeText(components.map(({ jsx }) => jsxToString(jsx)).join("\n"));
+                            window.navigator.clipboard.writeText(`\
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://unpkg.com/tailwindcss@2.0.3/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 grid place-items-center my-10">
+<div class="bg-white min-h-screen" style="width: 72.272727vh">
+${components.map((component) => renderToStaticMarkup(component.jsx() as ReactElement)).join("\n")}
+</div>
+</body>
+</html>\
+`);
                             setCopied(true);
                             setTimeout(() => setCopied(false), 1000);
                         }}
@@ -44,7 +56,12 @@ export default function Index({ assetPrefix }: { assetPrefix: string }) {
                     </a>
                 </header>
 
-                <Editor inspectorPanelActive={inspectorPanelActive} components={components} setComponents={setComponents} />
+                <Editor
+                    inspectorPanelActive={inspectorPanelActive}
+                    setInspectorPanelActive={setInspectorPanelActive}
+                    components={components}
+                    setComponents={setComponents}
+                />
 
                 <div
                     className="trigger set-height w-1 h-full bg-gray-900 fixed bottom-0 right-0 z-50"
